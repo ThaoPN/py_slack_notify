@@ -2,105 +2,125 @@ import os
 import requests
 import json
 
-from dotenv import load_dotenv
-load_dotenv()
+class SlackNotify:
+  def __init__(self, bot_oauth_token, user_oauth_token, 
+      post_message_url='https://slack.com/api/chat.postMessage',
+      search_message_url='https://slack.com/api/search.messages',
+      reaction_url='https://slack.com/api/reactions.add',
+      reaction_remove_url='https://slack.com/api/reactions.remove',
+      update_message_url='https://slack.com/api/chat.update'
+     ):
 
-OAUTH_TOKEN = os.getenv('OAUTH_TOKEN')
-BOT_OAUTH_TOKEN = os.getenv('BOT_OAUTH_TOKEN')
-POST_MESSAGE_URL = os.getenv('POST_MESSAGE_URL')
-SEARCH_MESSAGE_URL = os.getenv('SEARCH_MESSAGE_URL')
-REACTION_URL = os.getenv('REACTION_URL')
-REACTION_REMOVE_URL = os.getenv('REACTION_REMOVE_URL')
-UPDATE_URL = os.getenv('UPDATE_URL')
-CHANNEL_ID = os.getenv('CHANNEL_ID')
+     self.BOT_OAUTH_TOKEN = bot_oauth_token
+     self.OAUTH_TOKEN = user_oauth_token
+     self.POST_MESSAGE_URL = post_message_url
+     self.SEARCH_MESSAGE_URL = search_message_url
+     self.REACTION_URL = reaction_url
+     self.REACTION_REMOVE_URL = reaction_remove_url
+     self.UPDATE_URL = update_message_url
 
-def post_message(channel_id, message, thread_ts=None, emoji=None):
-  payload = {
-    "channel": channel_id,
-    "text": message
-  }
+  def post_message(self, channel_id, message, thread_ts=None, emoji=None):
+    payload = {
+      "channel": channel_id,
+      "text": message
+    }
 
-  if thread_ts:
-    payload['thread_ts'] = thread_ts
+    if thread_ts:
+      payload['thread_ts'] = thread_ts
 
-  headers = {
-    "Authorization": "Bearer " + BOT_OAUTH_TOKEN,
-    "Content-type": "application/json;charset=UTF-8"
-  }
-  
-  resp = requests.post(POST_MESSAGE_URL, json=payload, headers=headers)
+    headers = {
+      "Authorization": "Bearer " + self.BOT_OAUTH_TOKEN,
+      "Content-type": "application/json;charset=UTF-8"
+    }
+    
+    resp = requests.post(self.POST_MESSAGE_URL, json=payload, headers=headers)
 
-  resp_json = json.loads(resp.text)
-  print(resp_json)
+    # TODO: Need to check response status code
+    resp_json = json.loads(resp.text)
 
-  if emoji:
-    reaction(channel_id, emoji, resp_json['ts'])
+    if emoji:
+      self.reaction(channel_id, emoji, resp_json['ts'])
+    
+    return resp_json
 
-def find_messages(channel_id, text):
-  payload = {
-    "channel": channel_id
-  }
+  def find_messages(self, channel_id, text):
+    payload = {
+      "channel": channel_id
+    }
 
-  params = {
-    "query": "\"" + text + "\"",
-    "sort": "timestamp",
-    "sort_dir": "desc"
-  }
+    params = {
+      "query": "\"" + text + "\"",
+      "sort": "timestamp",
+      "sort_dir": "desc"
+    }
 
-  headers = {
-    "Authorization": "Bearer " + OAUTH_TOKEN,
-    "Content-type": "application/json;charset=UTF-8"
-  }
-  
-  resp = requests.get(SEARCH_MESSAGE_URL, params=params, json=payload, headers=headers)
+    headers = {
+      "Authorization": "Bearer " + self.OAUTH_TOKEN,
+      "Content-type": "application/json;charset=UTF-8"
+    }
+    
+    resp = requests.get(self.SEARCH_MESSAGE_URL, params=params, json=payload, headers=headers)
 
-  resp_json = json.loads(resp.text)
-  print(resp_json)
+    # TODO: Need to check response status code
+    resp_json = json.loads(resp.text)
+    return resp_json
 
-def reaction(channel_id, emoji, ts):
-  payload = {
-    "channel": channel_id,
-    "timestamp": ts,
-    "name": emoji
-  }
+  def reaction(self, channel_id, emoji, ts):
+    payload = {
+      "channel": channel_id,
+      "timestamp": ts,
+      "name": emoji
+    }
 
-  headers = {
-    "Authorization": "Bearer " + BOT_OAUTH_TOKEN,
-    "Content-type": "application/json;charset=UTF-8"
-  }
-  
-  resp = requests.post(REACTION_URL, json=payload, headers=headers)
+    headers = {
+      "Authorization": "Bearer " + self.BOT_OAUTH_TOKEN,
+      "Content-type": "application/json;charset=UTF-8"
+    }
+    
+    resp = requests.post(self.REACTION_URL, json=payload, headers=headers)
+    
+    # TODO: Need to check response status code
+    resp_json = json.loads(resp.text)
+    return resp_json
 
-def remove_reaction(channel_id, emoji, ts):
-  payload = {
-    "channel": channel_id,
-    "timestamp": ts,
-    "name": emoji
-  }
+  def remove_reaction(self, channel_id, emoji, ts):
+    payload = {
+      "channel": channel_id,
+      "timestamp": ts,
+      "name": emoji
+    }
 
-  headers = {
-    "Authorization": "Bearer " + BOT_OAUTH_TOKEN,
-    "Content-type": "application/json;charset=UTF-8"
-  }
-  
-  resp = requests.post(REACTION_REMOVE_URL, json=payload, headers=headers)
+    headers = {
+      "Authorization": "Bearer " + self.BOT_OAUTH_TOKEN,
+      "Content-type": "application/json;charset=UTF-8"
+    }
+    
+    resp = requests.post(self.REACTION_REMOVE_URL, json=payload, headers=headers)
 
-def edit_message(channel_id, message, ts, emoji):
-  payload = {
-    "channel": channel_id,
-    "ts": ts,
-    "text": message
-  }
+    # TODO: Need to check response status code
+    resp_json = json.loads(resp.text)
+    return resp_json
 
-  headers = {
-    "Authorization": "Bearer " + BOT_OAUTH_TOKEN,
-    "Content-type": "application/json;charset=UTF-8"
-  }
-  
-  resp = requests.post(UPDATE_URL, json=payload, headers=headers)
+  def edit_message(self, channel_id, message, ts, emoji):
+    payload = {
+      "channel": channel_id,
+      "ts": ts,
+      "text": message
+    }
 
-  if emoji:
-    reaction(channel_id, emoji, ts)
+    headers = {
+      "Authorization": "Bearer " + self.BOT_OAUTH_TOKEN,
+      "Content-type": "application/json;charset=UTF-8"
+    }
+    
+    resp = requests.post(self.UPDATE_URL, json=payload, headers=headers)
+
+    # TODO: Need to check response status code
+    if emoji:
+      self.reaction(channel_id, emoji, ts)
+    
+    resp_json = json.loads(resp.text)
+    return resp_json
 
 # post_message(CHANNEL_ID, "Test a message", None, 'call_me_hand')
 # reaction(CHANNEL_ID, 'tada', '1605086375.000900')

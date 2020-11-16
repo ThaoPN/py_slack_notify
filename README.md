@@ -5,7 +5,26 @@
 - remove_reaction(channel_id, emoji, ts)
 - edit_message(channel_id, message, ts, emoji)
 
-# Example
+## Example
+### Post a message
+```post_message(CHANNEL_ID, "Test a message", None, 'call_me_hand')```
 
-# Install
-python setup.py bdist_wheel
+### Make a reaction to a message
+```reaction(CHANNEL_ID, 'tada', '1605086375.000900')```
+
+### Find a message
+```find_messages(CHANNEL_ID, "Test a message")```
+
+### Edit a message
+```edit_message(CHANNEL_ID, "Reply to message. This message has been edited", '1605089273.002500', 'call_me_hand')```
+
+### Remove reaction on a message
+```remove_reaction(CHANNEL_ID, 'call_me_hand', '1605089273.002500')```
+
+## Install
+```python setup.py bdist_wheel```
+
+## Deploy
+```python3 -m twine upload --repository pypi dist/*```
+
+## Contribution
