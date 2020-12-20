@@ -19,11 +19,18 @@ class SlackNotify:
      self.REACTION_REMOVE_URL = reaction_remove_url
      self.UPDATE_URL = update_message_url
 
-  def post_message(self, channel_id, message, thread_ts=None, emoji=None):
+  def post_message(self, channel_id, message=None, thread_ts=None, blocks=None, emoji=None):
+    
     payload = {
       "channel": channel_id,
-      "text": message
+      # "text": message,
+      # "blocks": [{"type": "section", "text": {"type": "plain_text", "text": "Hello world"}}]
     }
+
+    if blocks is not None:
+      payload['blocks'] = blocks
+    else:
+      payload['text'] = message
 
     if thread_ts:
       payload['thread_ts'] = thread_ts
@@ -37,10 +44,10 @@ class SlackNotify:
 
     # TODO: Need to check response status code
     resp_json = json.loads(resp.text)
-
-    if emoji:
-      self.reaction(channel_id, emoji, resp_json['ts'])
-    
+    if resp_json.get('ok'):
+      if emoji:
+        self.reaction(channel_id, emoji, resp_json['ts'])
+      
     return resp_json
 
   def find_messages(self, channel_id, text):

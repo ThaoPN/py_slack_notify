@@ -1,9 +1,9 @@
 # Methods
-- post_message(channel_id, message, thread_ts, emoji)
+- post_message(channel_id, message, blocks, thread_ts, emoji)
 - find_messages(channel_id, text)
 - reaction(channel_id, emoji, ts)
 - remove_reaction(channel_id, emoji, ts)
-- edit_message(channel_id, message, ts, emoji)
+- edit_message(channel_id, message, blocks, ts, emoji)
 
 ## Example
 ### Post a message
@@ -28,3 +28,6 @@
 ```python3 -m twine upload --repository pypi dist/*```
 
 ## Contribution
+### Virtual environment
+python3 -m venv venv
+source venv/bin/activate

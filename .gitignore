@@ -5,3 +5,4 @@ venv
 .env
 .pypirc
 test.py
+__pycache__
