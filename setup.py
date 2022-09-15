@@ -2,10 +2,10 @@ from setuptools import find_packages, setup
 
 setup(
     name="py3_slack_notify",
-    packages=find_packages(include=["py_slack_notify"]),
-    version="0.3.0",
-    description="Python package for sending notification to Slack in thread with emoji",
-    author="thaopn",
+    packages=find_packages(include=["py3_slack_notify"]),
+    version="0.3.1",
+    description="Python package for sending message to Slack in thread with emoji",
+    author="Thaopn",
     url="https://github.com/ThaoPN/py_slack_notify",
     license="MIT",
     classifiers=[
