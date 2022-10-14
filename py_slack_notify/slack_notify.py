@@ -44,6 +44,7 @@ class SlackNotify:
         message=None,
         thread_ts=None,
         blocks=None,
+        attachments=None,
         emoji=None,
         reply_broadcast=False,
     ):
@@ -51,8 +52,9 @@ class SlackNotify:
         payload = {
             "channel": channel_id,
         }
-
-        if blocks is not None:
+        if attachments:
+            payload["attachments"] = attachments
+        elif blocks:
             payload["blocks"] = blocks
         else:
             payload["text"] = message
@@ -167,11 +169,3 @@ class SlackNotify:
             logging.error(resp_json)
 
         return resp
-
-
-# post_message(CHANNEL_ID, "Test a message", None, 'call_me_hand')
-# reaction(CHANNEL_ID, 'tada', '1605086375.000900')
-# find_messages(CHANNEL_ID, "Test a message")
-# post_message(CHANNEL_ID, "Reply to message", '1605086946.001900', 'tada')
-# edit_message(CHANNEL_ID, "Reply to message. This message has been edited", '1605089273.002500', 'call_me_hand')
-# remove_reaction(CHANNEL_ID, 'call_me_hand', '1605089273.002500')
