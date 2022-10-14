@@ -22,7 +22,7 @@ class SlackNotify:
         self.REACTION_REMOVE_URL = reaction_remove_url
         self.UPDATE_URL = update_message_url
 
-    def post_message(self, channel_id, message=None, thread_ts=None, blocks=None, emoji=None, reply_broadcast=False):
+    def post_message(self, channel_id, message=None, thread_ts=None, blocks=None, attachments=None, emoji=None, reply_broadcast=False):
 
         payload = {
             "channel": channel_id,
@@ -30,7 +30,9 @@ class SlackNotify:
             # "blocks": [{"type": "section", "text": {"type": "plain_text", "text": "Hello world"}}]
         }
 
-        if blocks is not None:
+        if attachments:
+            payload["attachments"] = attachments
+        elif blocks:
             payload["blocks"] = blocks
         else:
             payload["text"] = message
